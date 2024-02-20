@@ -1,4 +1,4 @@
-package com.example.funfactsassignment
+package com.example.funfactassignment
 
 import android.app.Application
 import android.os.Bundle
