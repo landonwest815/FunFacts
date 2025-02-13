@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                             //val list by vm.facts.collectAsState(listOf())
                             val list = listOf(FunFact("REPLACE ME", "https://cs.utah.edu"))
                             LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                for (fact in list!!.asReversed()) {
+                                for (fact in list.asReversed()) {
                                     item {
                                         Fact(fact)
                                     }
