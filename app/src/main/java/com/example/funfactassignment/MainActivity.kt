@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,9 +33,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val vm: FactsViewModel by viewModels {
-            FactsViewModel.Factory(FactsRepository())
-        }
+        val vm: FactsViewModel by viewModels{ FactsViewModelProvider.Factory}
 
         setContent {
             FunFactsTheme {
@@ -66,7 +65,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
 
-                            val list = vm.facts
+                            val list = vm.facts.collectAsState(initial = emptyList()).value
 
                             LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 for (fact in list.asReversed()) {
@@ -116,6 +115,6 @@ fun Fact(fact: FunFact, modifier: Modifier = Modifier) {
 @Composable
 fun FactPreview() {
     FunFactsTheme {
-        Fact(FunFact("Interesting fact!", "https://some.fact.com/thefact"))
+        //Fact(FunFact("Interesting fact!", "https://some.fact.com/thefact"))
     }
 }

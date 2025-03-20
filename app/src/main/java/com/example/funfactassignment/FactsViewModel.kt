@@ -1,38 +1,38 @@
 package com.example.funfactassignment
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 
 class FactsViewModel(private val repository: FactsRepository) : ViewModel() {
-    // list of facts
-    private val _facts = mutableStateListOf<FunFact>()
-    val facts: List<FunFact> = _facts
+    // expose the facts as a StateFlow
+    val facts: StateFlow<List<FunFact>> = repository.allFacts.stateIn(
+        scope = repository.scope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = listOf()
+    )
 
     // fetch a fact from the repository
     fun fetchFact() {
-        viewModelScope.launch {
-            try {
-                // fetch a fact from the repository
-                val fact = repository.getFunFact()
-                _facts.add(fact)
-            } catch (e: Exception) {
-                Log.e("FactsViewModel", "Error fetching fact", e)
-            }
-        }
+        Log.d("FactsViewModel", "Fetching new fact")
+        repository.fetchAndSaveFact()
     }
+}
 
-    // factory class to create the view model
-    class Factory(private val repository: FactsRepository) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(FactsViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return FactsViewModel(repository) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
+// factory for our view model
+object FactsViewModelProvider {
+    val Factory = viewModelFactory {
+        initializer {
+            FactsViewModel(
+                (this[AndroidViewModelFactory.APPLICATION_KEY] as FunFactApplication).funFactRepository
+            )
         }
     }
 }
