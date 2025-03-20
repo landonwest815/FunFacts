@@ -1,7 +1,7 @@
 package com.example.funfactassignment
 
-import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -21,30 +21,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.example.funfactassignment.FunFact
 import com.example.funfactsassignment.ui.theme.FunFactsTheme
-
-
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /**** TODO: UPDATE ME AS NEEDED *****/
-        /* Something like
-        val vm: FactsViewModel by viewModels(){
-            FactsViewModel.Factory((application as FunFactsApplication).repository)}
-
-        */
+        val vm: FactsViewModel by viewModels {
+            FactsViewModel.Factory(FactsRepository())
+        }
 
         setContent {
             FunFactsTheme {
@@ -53,9 +43,8 @@ class MainActivity : ComponentActivity() {
                     ExtendedFloatingActionButton(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         onClick = {
-                            //TODO: UPDATE ME!!!
-                            //something like vm.fetchFact()
-
+                            vm.fetchFact()
+                            Log.d("MainActivity", "Button Clicked")
                         }){
                         Text(color = MaterialTheme.colorScheme.onTertiaryContainer,
                             text ="Fetch Fact")
@@ -65,7 +54,6 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background
                     ) {
                         Column {
-
                             Card(modifier = Modifier.padding(8.dp).fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.primaryContainer)
 
@@ -77,12 +65,9 @@ class MainActivity : ComponentActivity() {
                                     style = MaterialTheme.typography.headlineLarge
                                 )
                             }
-                            //TODO UPDATE ME!!!
-                            //Something like
-                            //This for phase 1: val list = vm.fakeData
-                            //This for phase 2:
-                            //val list by vm.facts.collectAsState(listOf())
-                            val list = listOf(FunFact("REPLACE ME", "https://cs.utah.edu"))
+
+                            val list = vm.facts
+
                             LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 for (fact in list.asReversed()) {
                                     item {
