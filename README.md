@@ -6,7 +6,7 @@ FunFacts is a lightweight Android application that presents users with random fu
 
 ## 🖼️ Screenshot
 
-<img src="./assets/demo.png" height="400"/>
+<img src="./Assets/demo.png" height="400"/>
 
 ## 🎯 Project Objectives
 
